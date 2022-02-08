@@ -9,71 +9,78 @@ function computerPlay () {
 // return who won
 function playRound(playerSelection, computerSelection) {
 
+    console.log(playerSelection);
+
     if (playerSelection === "rock") {
         if (computerSelection === "rock") {
-            return "tie";
+            return "tied";;
         } else if (computerSelection === "paper") {
-            return "win";
+            return "lost";
         } else {
-            return "loss";
+            return "won";
         }
     } else if (playerSelection === "paper") {
         if (computerSelection === "rock") {
-            return "win";
+            return "won";
         } else if (computerSelection === "paper") {
-            return "tie";
+            return "tied";
         } else {
-            return "loss";
+            return "lost";
         }
     } else {
         if (computerSelection === "rock") {
-            return "loss";
+            return "lost";
         } else if (computerSelection === "paper") {
-            return "win";
+            return "won";
         } else {
-            return "tie";
+            return "tied";
         }
     }
+
+
 }
 
-// play 5 matches and print the winner
-function game() {
+let computerScore = 0;
+let playerScore = 0;
+const buttons = document.querySelectorAll("button");
+let round;
+let playerSelection;
 
-    let computerScore = 0;
-    let playerScore = 0;
+// play game based on what button user clicks, return results
+buttons.forEach((button) => {
+    button.addEventListener("click", function(e){
+            const computerSelection = computerPlay();
+            round = playRound(e.target.id, computerSelection);
+            playerSelection = e.target.id;
 
-    for (let i = 0; i < 5; i++) {
+            if (round === "won") {
+                playerScore++;
+            } else if (round === "lost") {
+                computerScore++;
+            }
 
-        let playerSelection = prompt("Choose rock, paper, or scissors").toLowerCase();
+            document.getElementById("results").textContent = `
+You chose ${playerSelection} & the computer chose ${computerSelection}
+This round: you ${round}! 
+Player score: ${playerScore}
+Computer score: ${computerScore}`;
 
-        // make sure receive correct input
-        while (playerSelection !== "rock" && playerSelection !== "paper" && playerSelection !== "scissors") {
-            playerSelection = prompt(("Choose rock, paper, or scissors").toLowerCase())
-        }
-    
-        let computerSelection = computerPlay();
-        let round = playRound(playerSelection, computerSelection);
+            // clear last game's results
+            if (document.getElementById("end").textContent !== "") {
+                document.getElementById("end").textContent = "";
+            }
 
-        if (round === "win") {
-            playerScore++;
-        } else if (round === "loss") {
-            computerScore++;
-        }
+            if (playerScore == 5) {
+                document.getElementById("end").textContent = "You won the game!";
+                playerScore = 0;
+                computerScore = 0;
+            } else if (computerScore == 5) {
+                document.getElementById("end").textContent = "The computer won the game!"
+                playerScore = 0;
+                computerScore = 0;
+            }
 
-        console.log(`You chose ${playerSelection} & the computer chose ${computerSelection}`);
-        console.log("result: " + round);
-        console.log("player score: " + playerScore);
-        console.log("computer score: " + computerScore);
-    }
-
-    if (computerScore > playerScore) {
-        console.log("The computer won the game!")
-    } else if (computerScore < playerScore) {
-        console.log("You won the game!")
-    } else {
-        console.log("You tied the game!")
-    }
-}
+    })
+});
 
 
-console.log(game());
